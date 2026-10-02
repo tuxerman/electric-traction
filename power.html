@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Animated motoring and braking energy paths through the WAP4 and IGBT WAP7 locomotives.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>WAP4 vs WAP7 Power Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Pages">
+    <a class="brand" href="./">WAP4 vs WAP7</a>
+    <div class="tabs">
+      <a href="./"><span>1</span>Layout</a>
+      <a href="power.html" aria-current="page"><span>2</span>Power flow</a>
+      <a href="drive.html"><span>3</span>Drive</a>
+    </div>
+  </nav>
+  <header>
+    <h1>Power flow: motoring and braking</h1>
+    <p class="lede">Switch between motoring and braking to see where the energy goes in each loco, first on the side view and then stage by stage. When motoring, both draw from the 25 kV line. When braking, the WAP7 sends power back up the wire; the WAP4 turns it into heat on the roof.</p>
+  </header>
+
+  <section style="display:grid;gap:16px">
+  <div class="modebar">
+    <div class="seg" role="group" aria-label="Energy flow">
+      <button type="button" id="m-motor" data-mode="motor" aria-pressed="true">Motoring</button>
+      <button type="button" id="m-brake" data-mode="brake" aria-pressed="false">Braking</button>
+    </div>
+    <div class="modehint" id="modehint"></div>
+  </div>
+
+    <figure class="liv4">
+      <figcaption class="livhead"><h2>WAP4</h2></figcaption>
+      <div class="scroll"><svg class="side" id="o4" viewBox="0 0 900 290" role="img" aria-label="WAP4 side view with animated energy flow"></svg></div>
+    </figure>
+    <figure class="liv7">
+      <figcaption class="livhead"><h2>WAP7</h2></figcaption>
+      <div class="scroll"><svg class="side" id="o7" viewBox="0 0 900 290" role="img" aria-label="WAP7 side view with animated energy flow"></svg></div>
+    </figure>
+    <h2 id="chainhead">Energy path, step by step</h2>
+    <div class="chains">
+      <div class="card liv4"><h2 class="livhead">WAP4</h2><ol class="chain" id="c4"></ol><p class="cap" id="c4cap"></p></div>
+      <div class="card liv7"><h2 class="livhead">WAP7</h2><ol class="chain" id="c7"></ol><p class="cap" id="c7cap"></p></div>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="Other pages"><a href="./">← Layout: what is where</a><a href="drive.html">Drive: 0 to 110 km/h →</a></nav>
+</div>
+
+<script src="common.js"></script>
+<script>
+const S7=side(document.getElementById("o7"),cfg7("o7"));
+const S4=side(document.getElementById("o4"),cfg4("o4"));
+let mode="motor";
+const CH={
+ WAP4:{motor:[["Overhead line","25 kV, 50 Hz"],["Pantograph + main breaker (DJ)","on the roof"],["Transformer + tap changer","32 notches; the driver picks the voltage"],["Silicon rectifiers","diodes: power can only flow one way"],["Smoothing reactors (SL)","iron-cored chokes under the floor"],["Line contactors + reverser","direction set by switching"],["6 DC series motors","HS15250A, 630 kW, 750 V each"]],
+       motorCap:"Every voltage step is a physical tap. When line voltage sags, the motor voltage sags with it until the driver notches up.",
+       brake:[["6 DC motors as generators","fields fed from the rectifier at a low notch"],["Braking contactors","reconnect the armatures"],["Roof resistor grids","blower-cooled"],["Heat to the air","energy is wasted"]],
+       brakeCap:"Rheostatic only. The diodes cannot pass power back to the line, and braking effort fades at low speed."},
+ WAP7:{motor:[["Overhead line","25 kV, 50 Hz"],["Pantograph + main breaker (VCB)","on the roof"],["Main transformer","four 1269 V windings, no taps"],["Four-quadrant line converters (4QC)","IGBT, 250 Hz, unity power factor"],["DC link","about 2800 V, held steady by software"],["Motor inverters","variable voltage and frequency, 0–2180 V"],["6 induction motors","3 per converter"]],
+       motorCap:"Line-voltage sag is absorbed by the line converters, which hold the DC link steady. The motors never see it.",
+       brake:[["Overhead line","receives power, in phase"],["Pantograph + main breaker (VCB)",""],["Main transformer",""],["Four-quadrant line converters (4QC)","now inverting DC back to 50 Hz"],["DC link","crowbar only clips spikes"],["Motor inverters","now rectifying"],["6 induction motors","running as generators"]],
+       brakeCap:"Regenerative: the same hardware runs in reverse. IRIMEE puts the energy saving at 16–18%."}
+};
+function chain(id,loco){
+  const ol=document.getElementById(id);ol.innerHTML="";
+  const d=CH[loco],m=mode,items=d[m];
+  const up=m==="brake"&&loco==="WAP7";
+  items.forEach((it,i)=>{
+    if(i){const a=document.createElement("li");a.className="arw";a.setAttribute("aria-hidden","true");a.textContent=up?"↑":"↓";ol.append(a)}
+    const li=document.createElement("li");li.innerHTML=`<b>${it[0]}</b>${it[1]?`<span>${it[1]}</span>`:""}`;ol.append(li);
+  });
+  document.getElementById(id+"cap").textContent=d[m+"Cap"];
+}
+const hints={motor:"Motoring: power flows from the overhead line to the wheels. The chain below lists every stage.",brake:"Braking: the motors become generators. On the WAP7 the power goes back up the wire; on the WAP4 it becomes heat on the roof."};
+function setMode(m){
+  mode=m;
+  for(const b of document.querySelectorAll(".seg button"))b.setAttribute("aria-pressed",String(b.dataset.mode===m));
+  document.getElementById("modehint").textContent=hints[m];
+  for(const S of [S4,S7])for(const md of ["motor","brake"])S.groups[md].style.display=md===m?"":"none";
+  chain("c4","WAP4");chain("c7","WAP7");
+  document.getElementById("chainhead").textContent=m==="brake"?"Energy path when braking":"Energy path when motoring";
+}
+for(const b of document.querySelectorAll(".seg button"))b.addEventListener("click",()=>setMode(b.dataset.mode));
+setMode("motor");
+</script>
+</body>
+</html>

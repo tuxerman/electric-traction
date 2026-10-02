@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Drive a WAP4 and an IGBT WAP7 side by side from 0 to 110 km/h and watch what the tap changer and the converters do with line voltage.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>WAP4 vs WAP7 Driving Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Pages">
+    <a class="brand" href="./">WAP4 vs WAP7</a>
+    <div class="tabs">
+      <a href="./"><span>1</span>Layout</a>
+      <a href="power.html"><span>2</span>Power flow</a>
+      <a href="drive.html" aria-current="page"><span>3</span>Drive</a>
+    </div>
+  </nav>
+  <header>
+    <h1>Drive it: 0 to 110 km/h</h1>
+  </header>
+
+  <section class="sim" id="sim">
+    <p class="cap">Each loco pulls the same train: 22 LHB coaches, about 1050 t, on level track. Each loco has its own driver switch. On <b>Auto</b> the computer drives: it notches the WAP4 the way crews are taught, keeping motor current under 900 A and motor voltage under 750 V and using field weakening after notch 20. It asks the WAP7 for full tractive effort. Switch either loco to <b>Me</b> and drive it yourself, for example against the computer on the other loco, then press <b>Start from 0</b>. Raise or lower the pantograph voltage at any time and watch what each loco does with it. This is an illustrative model built from published ratings, not a certified simulation.</p>
+
+    <div class="simbar">
+      <button type="button" class="btn primary" id="simrun">Start from 0</button>
+      <button type="button" class="btn" id="simpause">Pause</button>
+      <button type="button" class="btn" id="simreset">Reset</button>
+      <label class="inl" for="tscale">Speed
+        <select id="tscale"><option value="1">Real time</option><option value="4" selected>4×</option><option value="10">10×</option><option value="20">20×</option></select></label>
+      <div class="clock"><span>Time</span><output id="clock" aria-live="off">0:00</output></div>
+    </div>
+
+    <div class="ohe card">
+      <div class="ohectl">
+        <b class="lbl">Pantograph voltage</b>
+        <button type="button" class="btn sq" id="ohedn" aria-label="Lower line voltage by 0.1 kV">−</button>
+        <output id="oheout" class="ohev" aria-live="polite">25.0 kV</output>
+        <button type="button" class="btn sq" id="oheup" aria-label="Raise line voltage by 0.1 kV">+</button>
+        <button type="button" class="btn" id="ohenom">Back to 25</button>
+      </div>
+      <div class="ohezone" id="ohezone"></div>
+      <p class="hintsm">Steps of 0.1 kV; hold a button to keep going. 16.5 converter minimum · 22.5 WAP7 full power · 25 nominal · 27.5 max continuous.</p>
+    </div>
+
+    <div class="simgrid">
+      <div class="card loco liv4" id="L4">
+        <header class="livhead"><h2>WAP4</h2><span class="note">tap changer · DC motors</span></header>
+        <section class="sect" aria-label="WAP4 cab controls">
+          <div class="secthead">Cab controls</div>
+          <div class="ctlrow"><span class="lbl">Driver</span>
+            <span class="seg2" role="group" aria-label="WAP4 driver"><button type="button" class="btn" data-drv="w4" data-v="auto">Auto</button><button type="button" class="btn" data-drv="w4" data-v="me">Me</button></span></div>
+          <div class="ctlrow"><span class="lbl">Master controller (MP) handwheel · notch</span>
+            <span class="stepper"><button type="button" class="btn sq" id="n4dn" aria-label="Notch down">−</button>
+            <output id="n4out" class="big">0 / 32</output>
+            <button type="button" class="btn sq" id="n4up" aria-label="Notch up">+</button></span></div>
+          <div class="ladder" id="ladder" aria-hidden="true"></div>
+          <div class="ctlrow"><span class="lbl">Weak-field lever (MPS)</span>
+            <span class="seg2" role="group" aria-label="Weak-field lever position">
+              <button type="button" class="btn sq" data-mps="0">0</button><button type="button" class="btn sq" data-mps="1">1</button><button type="button" class="btn sq" data-mps="2">2</button></span></div>
+          <p class="hintsm">Each notch moves the tap changer one step. The MPS lever weakens the motor fields, from notch 20 up.</p>
+        </section>
+        <section class="sect" aria-label="WAP4 cab gauges">
+          <div class="secthead">Cab gauges</div>
+          <div class="speedo"><span id="v4">0</span><small>km/h</small></div>
+          <div class="gauges" id="g4"></div>
+          <div class="flowbar" id="fb4" aria-hidden="true"></div>
+          <div class="warn" id="w4" role="status"></div>
+        </section>
+        <section class="sect" aria-label="WAP4 event log">
+          <div class="secthead">Event log</div>
+          <ul class="log" id="log4"></ul>
+        </section>
+        <section class="sect" aria-label="Inside the WAP4">
+          <div class="secthead">Inside the loco</div>
+          <div class="rows" id="r4"></div>
+        </section>
+      </div>
+      <div class="card loco liv7" id="L7">
+        <header class="livhead"><h2>WAP7</h2><span class="note">IGBT converters · 3-phase motors</span></header>
+        <section class="sect" aria-label="WAP7 cab controls">
+          <div class="secthead">Cab controls</div>
+          <div class="ctlrow"><span class="lbl">Driver</span>
+            <span class="seg2" role="group" aria-label="WAP7 driver"><button type="button" class="btn" data-drv="w7" data-v="auto">Auto</button><button type="button" class="btn" data-drv="w7" data-v="me">Me</button></span></div>
+          <div class="ctlrow"><label class="lbl" for="te7">TE/BE throttle · tractive effort</label><output id="te7out" class="big">100%</output></div>
+          <input type="range" id="te7" min="0" max="100" step="5" value="100">
+          <p class="hintsm">Push forward for tractive effort (TE), pull back for braking effort (BE); this run only uses TE. The driver asks for a share of the maximum pull and the converters work out the voltage and frequency.</p>
+        </section>
+        <section class="sect" aria-label="WAP7 cab gauges">
+          <div class="secthead">Cab gauges</div>
+          <div class="speedo"><span id="v7">0</span><small>km/h</small></div>
+          <div class="gauges" id="g7"></div>
+          <div class="flowbar" id="fb7" aria-hidden="true"></div>
+          <div class="warn" id="w7" role="status"></div>
+        </section>
+        <section class="sect" aria-label="WAP7 event log">
+          <div class="secthead">Event log</div>
+          <ul class="log" id="log7"></ul>
+        </section>
+        <section class="sect" aria-label="Inside the WAP7">
+          <div class="secthead">Inside the loco</div>
+          <div class="rows" id="r7"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="result" id="result" role="status"></div>
+
+    <div class="charts">
+      <figure><figcaption><h2>Speed over time</h2><span class="note"><i class="key k4"></i>WAP4 <i class="key k7"></i>WAP7</span></figcaption><canvas id="ch1" height="220" aria-label="Speed against time for both locomotives"></canvas></figure>
+      <figure><figcaption><h2>Pull against speed</h2><span class="note">tractive effort, kN</span></figcaption><canvas id="ch2" height="220" aria-label="Tractive effort against speed for both locomotives"></canvas></figure>
+    </div>
+    <p class="cap"><b>Why the WAP4 line is a sawtooth.</b> Each notch fixes the DC voltage. As the train speeds up, the series motors generate more back-voltage, so less current flows; and because their field is made by that same current, the pull falls even faster than the current does. Taking the next notch lifts the voltage and the current jumps back up. The WAP7's converters re-adjust voltage and frequency hundreds of times a second to hold the pull you asked for, so its line stays flat until it reaches its power limit.</p>
+  </section>
+
+  <nav class="pager" aria-label="Other pages"><a href="power.html">← Power flow: motoring and braking</a><span></span></nav>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const G=9.81,TRAIL=1050,M4=112.8,M7=123;
+const ALPHA=[1,0.78,0.6],C4=15.9,R4=0.12,RM=0.04,ADH4=0.25*M4*G,TEMAX7=322,PMAX7=4500;
+let lineV=25;
+const res=(v,M)=>M*G*(1.2+0.01*v+0.00025*v*v)/1000;
+const phi=I=>I/(I+300);
+let S;
+function init(){
+  S={t:0,running:false,V:lineV,trace:[],lastTrace:-1,
+    w4:{v:0,x:0,TE:0,n:0,mps:0,trip:false,lastAct:0,done:null,r:null,slip:false},
+    w7:{v:0,x:0,TE:0,done:null,low:false,cp:false}};
+  for(const id of ["log4","log7"])$(id).innerHTML="";
+  $("result").textContent="";
+  if(isAuto("w7"))teLogged=100;
+  for(const k of ["w4","w7"])log(k==="w4"?"log4":"log7",`Driver: ${isAuto(k)?"Auto (computer)":"Me (you)"}, pantograph ${lineV.toFixed(1)} kV`);
+}
+function log(which,msg){
+  const ul=$(which),li=document.createElement("li");
+  li.innerHTML=`<span>${fmtT(S.t)}</span>${msg}`;ul.prepend(li);
+  while(ul.children.length>8)ul.lastChild.remove();
+}
+const fmtT=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,"0")}`;
+const drv={w4:"auto",w7:"auto"};
+const isAuto=k=>drv[k]==="auto";
+
+function solve4(n,mps,v,V){
+  const Vsec=1000*(n/32)*(V/22.5),U0=0.9*Vsec,a=ALPHA[mps];
+  if(n===0)return{I:0,U0:0,Vsec:0,Um:0,TE:0};
+  const f=I=>U0-R4*I-C4*v*a*phi(I);
+  let lo=0,hi=8000;
+  for(let k=0;k<40;k++){const m=(lo+hi)/2;f(m)>0?lo=m:hi=m}
+  const I=lo,E=C4*v*a*phi(I);
+  return{I,U0,Vsec,E,Um:E+RM*I,TE:6*0.94*C4*a*phi(I)*I*3.6/1000};
+}
+function step4(dt){
+  const w=S.w4,M=M4+TRAIL;
+  if(w.done&&isAuto("w4")){w.v=110;w.x+=110/3.6*dt;w.r=solve4(w.n,w.mps,110,S.V);w.TE=res(110,M);return}
+  if(isAuto("w4")&&!w.trip&&S.t-w.lastAct>=1){
+    const cur=solve4(w.n,w.mps,w.v,S.V);
+    if(cur.Um>750&&w.n>0){w.n--;w.lastAct=S.t;log("log4",`Notch back to ${w.n}: motor voltage over 750 V`)}
+    else{
+      const up=w.n<32?solve4(w.n+1,w.mps,w.v,S.V):null;
+      if(up&&up.I<=900&&up.Um<=750){w.n++;w.lastAct=S.t;if(w.n===1||w.n%4===0)log("log4",`Notch ${w.n}: tap changer steps up, ${Math.round(up.U0)} V DC`)}
+      else if(w.n>=20&&w.mps<2){
+        const fw=solve4(w.n,w.mps+1,w.v,S.V);
+        if(fw.I<=900&&fw.Um<=750){w.mps++;w.lastAct=S.t;log("log4",`MPS ${w.mps}: field weakened to ${ALPHA[w.mps]*100}%, voltage drops, current rises`)}
+      }
+    }
+  }
+  let r=solve4(w.n,w.mps,w.v,S.V);
+  if(!w.trip&&r.I>1000){w.trip=true;log("log4","Overload relay tripped: DJ opens. Notch back to 0 to reset.")}
+  if(w.trip){if(w.n===0){w.trip=false;log("log4","DJ closed again")}else r={I:0,U0:0,Vsec:0,Um:0,TE:0}}
+  w.slip=r.TE>ADH4;
+  const TE=Math.min(r.TE,ADH4*0.95);
+  w.r=r;w.TE=TE;
+  const a=(TE-res(w.v,M))/(M*1.06);
+  w.v=Math.max(0,w.v+a*dt*3.6);w.x+=w.v/3.6*dt;
+  if(!w.done&&w.v>=110){w.done={t:S.t,x:w.x};log("log4","Reached 110 km/h")}
+}
+function step7(dt){
+  const w=S.w7,M=M7+TRAIL,V=S.V;
+  const dem=isAuto("w7")?1:+$("te7").value/100;
+  const low=V<16.5;
+  if(low!==w.low){w.low=low;log("log7",low?"Line below converter minimum: traction cut":"Line voltage back in range: traction restored")}
+  if(w.done&&isAuto("w7")){w.v=110;w.x+=110/3.6*dt;w.TE=res(110,M);w.dem=w.TE/Math.min(TEMAX7,PMAX7*Math.min(1,V/22.5)/(110/3.6));return}
+  const P=PMAX7*Math.min(1,V/22.5),vms=w.v/3.6;
+  const cap=Math.min(TEMAX7,vms>0.01?P/vms:TEMAX7);
+  const cp=vms>0.01&&P/vms<TEMAX7;
+  if(cp&&!w.cp&&dem>0.5)log("log7",`Constant-power region from ${Math.round(w.v)} km/h: pull now falls with speed`);
+  w.cp=cp;
+  w.TE=low?0:dem*cap;w.dem=dem;
+  const a=(w.TE-res(w.v,M))/(M*1.06);
+  w.v=Math.max(0,w.v+a*dt*3.6);w.x+=w.v/3.6*dt;
+  if(!w.done&&w.v>=110){w.done={t:S.t,x:w.x};log("log7","Reached 110 km/h")}
+}
+function d7(){
+  const w=S.w7,V=S.V,vms=w.v/3.6,TE=w.TE;
+  const Pm=TE*vms,Pl=Pm/0.92;
+  const rps=vms/(Math.PI*1.092)*3.6,slip=TE>1?0.4+1.2*TE/TEMAX7:0;
+  const f=w.v>0.05||TE>1?2*rps+slip:0;
+  const Vout=TE>1||w.v>0.5?2180*Math.min(1,Math.max(f,1)/40):0;
+  const It=TE>1?80+290*TE/TEMAX7:0,Ip=Vout>0?(Pm/6/0.94*1000)/(1.732*Vout*0.86):0;
+  return{Pm,Iprim:Pl/V,Vsec:1269*V/25,Iw:Pl/4/(1.269*V/25),dc:V<16.5?0:2800,f,Vout,Im:Math.max(It,Ip),TE};
+}
+
+const R4rows=[["wire","Current from the wire"],["tap","Tap changer"],["rect","Rectifiers, DC out"],["emf","Motor back-EMF"],["sl","Smoothing reactors (SL)"],["fld","Motor field"]];
+const R7rows=[["wire","Current from the wire"],["tr","Transformer secondary"],["lc","Line converters"],["dc","DC link"],["inv","Inverters out"]];
+const G4=[["mv","Motor voltage","V",800,750],["ma","Motor current","A",1100,900],["te","Tractive effort","kN",330,null,"Not present in a WAP4"],["kv","Line voltage","kV",27.5,null]];
+const G7=[["mv","Motor voltage","V",2400,null],["ma","Motor current","A",540,370],["te","Tractive effort","kN",330,null],["kv","Line voltage","kV",27.5,null]];
+function mkGauges(id,list){
+  $(id).innerHTML=list.map(([k,l,u,max,lim,absent])=>`<div class="gauge${absent?" absent":""}"><div class="gl">${l}${absent?`<span class="gnote">${absent}</span>`:""}</div><div class="gv"><span id="${id}-${k}">0</span><small>${u}</small></div><div class="gb"><i id="${id}-${k}-b"></i>${lim?`<b style="left:${lim/max*100}%" title="limit"></b>`:""}</div><div class="gs" id="${id}-${k}-s"></div></div>`).join("");
+  $(id).dataset.max=JSON.stringify(Object.fromEntries(list.map(g=>[g[0],g[3]])));
+}
+function setGauge(id,k,val,sub,state){
+  const max=JSON.parse($(id).dataset.max)[k];
+  $(`${id}-${k}`).textContent=k==="kv"?val.toFixed(1):r0(val);
+  $(`${id}-${k}-s`).textContent=sub||"";
+  const b=$(`${id}-${k}-b`);b.style.width=Math.max(0,Math.min(1,val/max))*100+"%";
+  b.className=state||"";$(`${id}-${k}`).parentElement.className="gv"+(state?" "+state:"");
+}
+function mkRows(id,rows){
+  $(id).innerHTML=rows.map(([k,l])=>`<div class="row"><div class="rl">${l}</div><div class="rv" id="${id}-${k}">–</div><div class="m"><i id="${id}-${k}-m"></i></div></div>`).join("");
+}
+function setRow(id,k,txt,frac,bad,warn){
+  $(`${id}-${k}`).textContent=txt;
+  const m=$(`${id}-${k}-m`);m.style.width=Math.max(0,Math.min(1,frac))*100+"%";
+  m.className=bad?"bad":warn?"warnm":"";
+}
+const r0=n=>Math.round(n).toLocaleString("en-IN");
+function render(){
+  $("clock").textContent=fmtT(S.t);
+  const sp=$("simpause");sp.textContent=S.running||S.t===0?"Pause":"Resume";sp.disabled=!S.running&&S.t===0;
+  const w=S.w4,r=w.r||{I:0,U0:0,Vsec:0,Um:0,TE:0},V=S.V;
+  $("v4").textContent=r0(w.v);$("n4out").textContent=`${w.n} / 32`;
+  [...$("ladder").children].forEach((c,i)=>c.classList.toggle("on",i<w.n));
+  for(const b of document.querySelectorAll("[data-mps]"))b.setAttribute("aria-pressed",String(+b.dataset.mps===w.mps));
+  const P4=6*r.Um*r.I/1000;
+  setRow("r4","wire",`${r0(P4/0.97/V/0.85)} A · pf 0.85`,P4/0.97/V/0.85/260);
+  setRow("r4","tap",`notch ${w.n} · ${r0(r.Vsec)} V AC`,w.n/32);
+  setRow("r4","rect",`${r0(r.U0)} V`,r.U0/1100);
+  setRow("r4","emf",r.E?`${r0(r.E)} V · gap ${r0(r.U0-r.E)} V`:"0 V",(r.E||0)/1100);
+  setRow("r4","sl",`${r0(3*r.I)} A per bogie`,3*r.I/3000);
+  setRow("r4","fld",`${ALPHA[w.mps]*100}% · MPS ${w.mps}`,ALPHA[w.mps]);
+  setGauge("g4","mv",r.Um,"limit 750 V",r.Um>750?"bad":r.Um>720?"warnm":"");
+  setGauge("g4","ma",r.I,"each motor · 900 A continuous",r.I>1000?"bad":r.I>900?"warnm":"");
+  setGauge("g4","te",w.TE,`${r0(P4)} kW`,w.slip?"bad":"");
+  setGauge("g4","kv",V,"catenary");
+  $("w4").textContent=w.trip?"Overload relay tripped: DJ open. Notch back to 0.":w.slip?"Wheel slip: pull above adhesion limit.":r.Um>750?"Motor voltage above 750 V: notch back or use MPS.":"";
+  const d=d7(),w7=S.w7;
+  $("v7").textContent=r0(w7.v);
+  if(isAuto("w7")){$("te7").value=Math.round((w7.dem??1)*100);if(+$("te7").value!==teLogged)logTe()}
+  $("te7out").textContent=`${Math.round((w7.dem??(+$("te7").value/100))*100)}%`;
+  setRow("r7","wire",`${r0(d.Iprim)} A · pf 1.00`,d.Iprim/260);
+  setRow("r7","tr",`${r0(d.Vsec)} V AC · no taps`,d.Vsec/1523);
+  setRow("r7","lc",`${r0(d.Iw)} A per winding`,d.Iw/1142);
+  setRow("r7","dc",d.dc?"2800 V · held steady":"0 V · tripped",d.dc/2800,!d.dc);
+  setRow("r7","inv",`${d.f.toFixed(1)} Hz · ${r0(d.Vout)} V`,d.f/175);
+  setGauge("g7","mv",d.Vout,"inverter output, line to line");
+  setGauge("g7","te",d.TE,`${r0(d.Pm)} kW`);
+  setGauge("g7","ma",d.Im,"each motor · 370 A rated",d.Im>540?"bad":d.Im>370?"warnm":"");
+  setGauge("g7","kv",V,V<22.5?"below full-power range":"catenary",V<16.5?"bad":V<22.5?"warnm":"");
+  $("w7").textContent=w7.low?"Line below 16.5 kV: converters cannot regulate, traction cut.":V<22.5&&w7.TE>0?`Line at ${V.toFixed(1)} kV: power limited to ${Math.round(100*V/22.5)}%, DC link still 2800 V.`:"";
+  for(const [id,p] of [["fb4",P4],["fb7",d.Pm]]){const fb=$(id);fb.style.setProperty("--dur",p>50?Math.max(0.25,2.4-p/2200)+"s":"0s");fb.classList.toggle("live",p>50&&S.running)}
+  for(const b of [$("n4up"),$("n4dn"),...document.querySelectorAll("[data-mps]")])b.disabled=isAuto("w4");
+  $("te7").disabled=isAuto("w7");
+  for(const b of document.querySelectorAll("[data-drv]"))b.setAttribute("aria-pressed",String(drv[b.dataset.drv]===b.dataset.v));
+  draw();
+}
+function tokens(){const cs=getComputedStyle(document.documentElement);return k=>cs.getPropertyValue(k).trim()}
+function canvasFit(c){const dpr=window.devicePixelRatio||1,w=c.clientWidth,h=220;if(c.width!==Math.round(w*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}const x=c.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);return{x,w,h}}
+function axes(x,w,h,T,xmax,ymax,xt,yt,xl,yl){
+  const L=40,B=26,Tp=10,R=10;x.clearRect(0,0,w,h);x.font="11px "+T("--body");x.fillStyle=T("--muted");x.strokeStyle=T("--line");x.lineWidth=1;
+  const X=v=>L+(w-L-R)*v/xmax,Y=v=>h-B-(h-B-Tp)*v/ymax;
+  for(const v of yt){x.beginPath();x.moveTo(L,Y(v));x.lineTo(w-R,Y(v));x.stroke();x.fillText(v,4,Y(v)+4)}
+  for(const v of xt){x.fillText(xl(v),X(v)-8,h-8)}
+  return{X,Y};
+}
+function draw(){
+  const T=tokens();
+  let {x,w,h}=canvasFit($("ch1"));
+  const tmax=Math.max(240,Math.ceil(S.t/60)*60);
+  const xt=[];for(let v=0;v<=tmax;v+=tmax>360?120:60)xt.push(v);
+  let A=axes(x,w,h,T,tmax,120,xt,[0,40,80,110],v=>fmtT(v));
+  x.setLineDash([4,4]);x.strokeStyle=T("--muted");x.beginPath();x.moveTo(A.X(0),A.Y(110));x.lineTo(A.X(tmax),A.Y(110));x.stroke();x.setLineDash([]);
+  for(const [k,c] of [["v4","--power"],["v7","--aux"]]){x.strokeStyle=T(c);x.lineWidth=2.5;x.beginPath();S.trace.forEach((p,i)=>{const px=A.X(p.t),py=A.Y(p[k]);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
+  ({x,w,h}=canvasFit($("ch2")));
+  A=axes(x,w,h,T,120,350,[0,30,60,90,120],[0,100,200,300],v=>String(v));
+  for(const [kv,kt,c] of [["v4","te4","--power"],["v7","te7","--aux"]]){x.strokeStyle=T(c);x.lineWidth=2.5;x.beginPath();S.trace.forEach((p,i)=>{const px=A.X(p[kv]),py=A.Y(p[kt]);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
+}
+let last=null;
+function frame(ts){
+  if(!S.running){last=null;return}
+  const dtr=last==null?0:Math.min(0.1,(ts-last)/1000);last=ts;
+  let sim=dtr*+$("tscale").value;
+  while(sim>1e-6){const dt=Math.min(0.05,sim);sim-=dt;S.t+=dt;step4(dt);step7(dt);
+    if(S.t-S.lastTrace>=0.5){S.lastTrace=S.t;S.trace.push({t:S.t,v4:S.w4.v,v7:S.w7.v,te4:S.w4.TE,te7:S.w7.TE})}}
+  if(S.w4.done&&S.w7.done&&isAuto("w4")&&isAuto("w7")&&S.t>Math.max(S.w4.done.t,S.w7.done.t)+10){S.running=false;$("simpause").textContent="Resume"}
+  const parts=[];
+  for(const [n,w] of [["WAP7",S.w7],["WAP4",S.w4]])if(w.done)parts.push(`${n} reached 110 km/h in ${fmtT(w.done.t)} over ${(w.done.x/1000).toFixed(1)} km.`);
+  $("result").textContent=parts.join(" ");
+  render();
+  if(S.running)requestAnimationFrame(frame);
+}
+function start(){if(!S.running){S.running=true;$("simpause").textContent="Pause";requestAnimationFrame(frame)}}
+$("ladder").innerHTML=Array.from({length:32},()=>"<i></i>").join("");
+mkRows("r4",R4rows);mkRows("r7",R7rows);mkGauges("g4",G4);mkGauges("g7",G7);
+$("simrun").onclick=()=>{init();start()};
+$("simpause").onclick=()=>{if(S.running){S.running=false;$("simpause").textContent="Resume";render()}else start()};
+$("simreset").onclick=()=>{S.running=false;init();render()};
+function zone(V){return V<=16.5?"Converter minimum: the WAP7 is about to lose traction.":V<22.5?`Sagging: WAP7 power capped at ${Math.round(100*V/22.5)}%. WAP4 DC output down ${Math.round(100*(1-V/25))}% on the same notch.`:V<25?`A little low: WAP7 still at full power. WAP4 DC output down ${Math.round(100*(1-V/25))}% on the same notch.`:V===25?"Nominal.":`Above nominal: WAP4 DC output up ${Math.round(100*(V/25-1))}% on the same notch.`}
+// Log a control change once it settles, so a held button or a dragged slider gives one entry.
+const settle=(key,fn)=>{clearTimeout(settle[key]);settle[key]=setTimeout(fn,700)};
+let vLogged=lineV,teLogged=+$("te7").value;
+// the slider moves in 5% steps, so the auto-driver logs once per step it actually moves
+function logTe(){
+  const v=+$("te7").value;if(v===teLogged)return;
+  const auto=isAuto("w7");
+  log("log7",`${auto?"Auto-driver: ":""}TE/BE throttle ${teLogged}% → ${v}% tractive effort${auto&&S.w7.done?", to hold 110 km/h":""}`);teLogged=v;
+}
+function logV(){
+  const a=vLogged,b=lineV;if(a===b)return;vLogged=b;
+  const pct=Math.round(100*Math.abs(b/a-1)),head=`Pantograph ${a.toFixed(1)} → ${b.toFixed(1)} kV`;
+  log("log4",`${head}: DC output ${b>a?"up":"down"} ${pct}% on the same notch`);
+  log("log7",`${head}: `+(b<16.5?"traction cut":b<22.5?`power capped at ${Math.round(100*b/22.5)}%, DC link still 2800 V`:"full power, DC link still 2800 V"));
+}
+function setV(v){
+  v=Math.round(Math.min(27.5,Math.max(16.5,v))*10)/10;if(v===lineV)return;
+  lineV=v;S.V=v;$("oheout").textContent=v.toFixed(1)+" kV";$("ohezone").textContent=zone(v);
+  $("ohedn").disabled=v<=16.5;$("oheup").disabled=v>=27.5;
+  settle("v",logV);
+  render();
+}
+for(const [id,d] of [["ohedn",-0.1],["oheup",0.1]]){
+  const b=$(id);let t=null;const stop=()=>{clearTimeout(t);clearInterval(t);t=null};
+  b.addEventListener("pointerdown",e=>{if(e.button)return;setV(lineV+d);stop();t=setTimeout(()=>{t=setInterval(()=>{if(b.disabled)return stop();setV(lineV+d)},60)},400)});
+  for(const ev of ["pointerup","pointerleave","pointercancel","blur"])b.addEventListener(ev,stop);
+  b.addEventListener("click",e=>{if(e.detail===0)setV(lineV+d)});
+}
+$("ohenom").onclick=()=>setV(25);
+$("ohezone").textContent=zone(lineV);
+$("n4up").onclick=()=>{if(S.w4.n<32){S.w4.n++;log("log4",`Notch ${S.w4.n}`)}if(!S.running)start();render()};
+$("n4dn").onclick=()=>{if(S.w4.n>0){S.w4.n--;log("log4",`Notch ${S.w4.n}`)}render()};
+for(const b of document.querySelectorAll("[data-mps]"))b.onclick=()=>{const m=+b.dataset.mps;if(m>0&&S.w4.n<20){$("w4").textContent="The MPS lever is only used from notch 20 up.";return}S.w4.mps=m;log("log4",`MPS ${m}: field ${ALPHA[m]*100}%`);render()};
+$("te7").oninput=()=>{S.w7.dem=+$("te7").value/100;if(!S.running&&S.w7.dem>0)start();render();
+  settle("te",logTe)};
+for(const b of document.querySelectorAll("[data-drv]"))b.onclick=()=>{
+  const k=b.dataset.drv,v=b.dataset.v;if(drv[k]===v)return;drv[k]=v;
+  if(k==="w7"&&v==="me"){S.w7.dem=+$("te7").value/100;teLogged=+$("te7").value}
+  // a person can't keep up at 10x, so drop to real time when someone takes over
+  if(v==="me"&&+$("tscale").value>1)$("tscale").value="1";
+  log(k==="w4"?"log4":"log7",v==="me"?"Driver switched to Me: you are driving":"Driver switched to Auto: the computer is driving");render()};
+addEventListener("resize",()=>draw());
+init();render();
+})();
+</script>
+</body>
+</html>

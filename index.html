@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tappable plan and side views of the WAP4 and IGBT WAP7 locomotive machine rooms, with the WAP7 traction converter cabinet opened up.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>WAP4 vs WAP7 Machine Rooms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Pages">
+    <a class="brand" href="./">WAP4 vs WAP7</a>
+    <div class="tabs">
+      <a href="./" aria-current="page"><span>1</span>Layout</a>
+      <a href="power.html"><span>2</span>Power flow</a>
+      <a href="drive.html"><span>3</span>Drive</a>
+    </div>
+  </nav>
+  <header>
+    <h1>Layout: what is where</h1>
+    <p class="lede">Tap any block for what it does and what replaced it on the other loco. Tap a WAP7 traction converter to open the cabinet. Both are 25 kV AC locos; the WAP7 is shown with its IGBT propulsion. The drawings are schematics: the transformer and converter placement and the cabinet contents come from IR and Hind Rectifiers documents, but the order of the smaller cubicles along the floor is approximate.</p>
+  </header>
+
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw" style="background:var(--power-bg);border-color:var(--power)"></i>Traction power path</span>
+    <span><i class="sw" style="background:var(--aux-bg);border-color:var(--aux)"></i>Auxiliary supply</span>
+    <span><i class="sw" style="background:var(--ctrl-bg);border-color:var(--ctrl)"></i>Control</span>
+    <span><i class="sw" style="background:var(--air-bg);border-color:var(--air)"></i>Air and brakes</span>
+    <span><i class="sw" style="background:var(--cool-bg);border-color:var(--cool)"></i>Cooling</span>
+    <span><i class="sw" style="background:var(--hotel-bg);border-color:var(--hotel)"></i>Coach (hotel) power</span>
+    <span><i class="sw dash"></i>Under the floor or on the roof</span>
+  </div>
+
+  <div class="layoutgrid">
+    <figure class="liv4">
+      <figcaption class="livhead"><h2>WAP4 · tap changer</h2><span class="note">DC motors · plan</span></figcaption>
+      <svg class="plan" id="p4" viewBox="0 0 360 900" role="img" aria-label="Schematic floor plan of a WAP4 locomotive"></svg>
+    </figure>
+    <figure class="liv7">
+      <figcaption class="livhead"><h2>WAP7 · three-phase</h2><span class="note">AC motors · plan</span></figcaption>
+      <svg class="plan" id="p7" viewBox="0 0 360 900" role="img" aria-label="Schematic floor plan of a WAP7 locomotive"></svg>
+    </figure>
+    <dialog class="panel pop" id="panel" aria-labelledby="ptitle"></dialog>
+  </div>
+
+  <section style="display:grid;gap:16px">
+    <h2>Side views: roof, body and under the floor</h2>
+    <p class="cap">The plan view hides two important levels. On the WAP7 the transformer hangs under the floor, directly below the two converters. On the WAP4 the transformer stands inside the body and the smoothing reactors hang underneath. Scroll sideways on a phone.</p>
+    <figure class="liv4">
+      <figcaption class="livhead"><h2>WAP4</h2></figcaption>
+      <div class="scroll"><svg class="side" id="s4" viewBox="0 0 900 290" role="img" aria-label="Side elevation of a WAP4 showing roof, body and underframe equipment"></svg></div>
+    </figure>
+    <figure class="liv7">
+      <figcaption class="livhead"><h2>WAP7</h2></figcaption>
+      <div class="scroll"><svg class="side" id="s7" viewBox="0 0 900 290" role="img" aria-label="Side elevation of a WAP7 showing roof, body and underframe equipment"></svg></div>
+    </figure>
+  </section>
+
+  <section class="sources">
+    <h2>Where to see real photos</h2>
+    <ul>
+      <li><a href="https://irfca.org/members/sites/zubin/WAP4.html">IRFCA: Inside WAP4</a> by Zubin Dotivala. Captioned photos of the smoothing reactors, transformer oil pump, tap-changer contactor with its transition resistors, line and reverser contactors, the DJ breaker, battery charger and the interlock key box. The same page links his WAG7 interior set, which is the WAP4's freight sibling.</li>
+      <li><a href="https://clw.indianrailways.gov.in/uploads/3phase/Operatinal%20%26%20maintance%20%26%20troubleshoting%20manual.pdf">CLW / Hind Rectifiers IGBT propulsion manual (PDF)</a>. The cabinet drawing on this page follows its figures 4.9 and 4.10. Pages 48–75 show the SR cubicle front and rear, the IGBT power units, the crowbar resistor, coolant pump and power terminals; chapter 3 shows the VCU rack inside SB1/SB2.</li>
+      <li><a href="https://rskr.irimee.in/sites/default/files/Electric%20Locomotive.pdf">IRIMEE: Introduction to Electric Locomotive (PDF)</a>. Ratings for the tap-changer loco's transformer, rectifier, smoothing reactor and HS15250A motors, and the regen comparison.</li>
+      <li><a href="https://irfca.org/gallery/Locos/Electric/">IRFCA photo gallery: electric locomotives</a>. Browse the WAP7, WAG9 and WAP5 albums; shed open days and workshop visits sometimes include machine-room shots.</li>
+      <li>Video: search YouTube for <code>WAP7 machine room</code> or <code>WAG9 engine room walkthrough</code>. Crew and shed vloggers often walk both aisles with the converter doors closed.</li>
+    </ul>
+  </section>
+
+  <nav class="pager" aria-label="Next page"><span></span><a href="power.html">Power flow: motoring and braking →</a></nav>
+</div>
+
+<script src="common.js"></script>
+<script>
+const W4=[
+ {id:"rb4",y:126,h:40,cat:"power",off:true,t:"Rheostatic brake resistors",s:"On the roof",d:"Resistor grids that burn off braking energy as heat, cooled by a blower. Braking effort falls away at low speed because the grid current limits it.",vs:"WAP7: braking is regenerative through the traction converters, so energy goes back to the overhead line. Its only resistor is the crowbar, for voltage spikes."},
+ {id:"cp4",y:182,h:44,cat:"air",t:"Compressors",s:"Main reservoir air",d:"Motor-driven compressors fed with 3-phase power from the Arno, plus the brake equipment and cut-out cocks.",vs:"WAP7: same job, with the compressors run from the IGBT auxiliary converters and a modern brake panel."},
+ {id:"mv4a",y:242,h:44,cat:"cool",t:"Traction motor blower 1",s:"MVMT1",d:"Forces air down to the DC traction motors on bogie 1.",vs:"WAP7: one blower per bogie as well, but its speed is varied by the auxiliary converter to save energy."},
+ {id:"rc4a",y:302,h:48,cat:"power",t:"Silicon rectifier 1",s:"Diode block + blower",d:"A passive bridge of S18FN350 diodes, 64 per bridge, rated about 2700 A and 1050 V per block. It turns the transformer's AC into DC for the motors, has no control of its own, and is cooled by a dedicated blower.",vs:"WAP7: replaced by the line converters inside SR1/SR2, which are controlled switches and can run power in reverse for regen."},
+ {id:"tr4",y:366,h:140,cat:"power",t:"Transformer + tap changer",s:"Centre of HT compartment",d:"A 12.2-tonne oil-cooled transformer standing inside the loco, rated about 5400 kVA, with the tap changer (GR) on top. 32 tap positions raise the motor voltage in roughly 32 V steps, notch by notch, using contactors and transition resistors.",vs:"WAP7: the transformer is slung under the floor and has no taps. Voltage control happens electronically in the line converters."},
+ {id:"rc4b",y:528,h:44,cat:"power",t:"Silicon rectifier 2",s:"Diode block + blower",d:"Second diode bridge, paralleled with the first on the AC side.",vs:"WAP7: line converters in SR1/SR2."},
+ {id:"sl4",y:518,h:100,cat:"power",off:true,x:30,w:300,t:"Smoothing reactors",s:"Under the floor",d:"SL-30 iron-cored coils, about 2.7 mH, rated 1250 V and 1050 A. They smooth the bumpy rectified DC before it reaches the motors, each with its own blower.",vs:"WAP7: the DC-link capacitor bank and the 100 Hz resonant filter do this job."},
+ {id:"ct4",y:634,h:44,cat:"ctrl",t:"Contactor & relay panels",s:"Line, reverser, field shunt",d:"Electromagnetic contactors and relays: line contactors, the reverser, braking changeover, and the field-weakening contactors behind the driver's MPS lever. The interlock key box sits nearby.",vs:"WAP7: SB1/SB2 cabinets with the VCU computers. Direction and field weakening are software in the inverters."},
+ {id:"mv4b",y:694,h:44,cat:"cool",t:"Blower 2 + oil cooling",s:"MVMT2, oil pump, radiator",d:"Second traction motor blower, plus the pump and radiator blower that cool the transformer oil.",vs:"WAP7: cooling units that handle both transformer oil and the converter coolant."},
+ {id:"ar4",y:754,h:42,cat:"aux",t:"Arno converter",s:"Near cab 2",d:"A rotating machine that turns the single-phase 415 V auxiliary winding into 3-phase for blowers and compressors. Many units were later retrofitted with static converters.",vs:"WAP7: three IGBT auxiliary converters (BUR1–3) in two boxes, giving variable-frequency power."}
+];
+const W7=[
+ {id:"sb1",y:126,h:40,cat:"ctrl",t:"Control cubicle SB1",s:"VCU 1, train bus",d:"Low-voltage cabinet with Vehicle Control Unit 1: a rack of 6U cards (processor, digital and analog I/O, power supplies) in a sealed case with a heat exchanger. It also holds the train-bus module for multiple-unit working.",vs:"WAP4: relay and contactor panels, with the driver doing the logic by hand."},
+ {id:"bur1",y:182,h:40,cat:"aux",t:"Aux converter box 1",s:"BUR1",d:"130 kVA IGBT converter that makes 415 V 3-phase at variable frequency from the transformer's 1000 V auxiliary winding. Air-cooled by the machine-room blowers.",vs:"WAP4: the Arno rotary converter."},
+ {id:"cp7",y:238,h:40,cat:"air",t:"Compressors & brake panel",s:"Pneumatics",d:"Air supply and the electro-pneumatic brake panel.",vs:"WAP4: similar compressors on Arno power."},
+ {id:"tr7",y:290,h:254,cat:"power",off:true,x:40,w:280,t:"",s:"",name:"Main transformer",d:"An oil-cooled transformer slung under the middle of the underframe. It has four 1269 V traction windings (two per converter), a 1000 V auxiliary winding and a filter winding, and its tank also holds the 100 Hz resonant chokes for the converters. On WAP7s built for head-on generation (HOG) there is no separate hotel transformer: the main transformer carries hotel load windings instead. The 7775 kVA version has two, 622.5 kVA at 960 V, one per hotel load converter; the first HOG locos had a single 945 kVA, 750 V winding.",vs:"WAP4: a transformer standing inside the HT compartment, with a tap changer on top."},
+ {id:"sr1",y:300,h:104,cat:"power",t:"Traction converter SR1",s:"Bogie 1 · tap to open",cab:true,d:"A 2.7-tonne stainless-steel cabinet, about 2.1 m tall and 1.1 m deep, holding the whole power chain for bogie 1: line converters, DC link and three motor inverters. The drawing below opens it up.",vs:"WAP4: diode rectifier, smoothing reactor, tap changer and contactors, spread over several boxes."},
+ {id:"sr2",y:420,h:104,cat:"power",t:"Traction converter SR2",s:"Bogie 2 · tap to open",cab:true,d:"Identical to SR1 and feeds the three motors on bogie 2. If one converter fails, the loco can carry on with the other.",vs:"WAP4: one shared rectifier set for all six motors."},
+ {id:"cl7",y:560,h:40,cat:"cool",t:"Cooling units & blowers",s:"Oil and converter coolant",d:"Radiators and blowers for the transformer oil and for the converters' water-glycol coolant, plus the traction motor blowers. The IGBT retrofit reused the radiator section that once cooled oil-filled GTO converters.",vs:"WAP4: separate blowers for motors, rectifiers and smoothing reactors."},
+ {id:"hlc",y:616,h:50,cat:"hotel",t:"Hotel load converters",s:"HLC 1 + 2 · 2 × 500 kVA",d:"Coach power for head-on generation (HOG). Two 500 kVA IGBT converters, each fed from its own hotel load winding in the main transformer, turn single-phase AC into 750 V, 3-phase, 50 Hz for the train; each coach steps it down to 415 V. Inside each: input and pre-charge contactors, a line converter, a DC link, an inverter, then a sine filter and an RC filter to clean up the output. Forced-air cooled, in stainless-steel cubicles. The output leaves through inter-vehicle (IV) couplers at both ends of the loco. The driver closes the input contactor with the BLHO switch on the desk, and has to close it again after every neutral section. Only on WAP7s built or fitted for HOG; the position along the floor here is approximate.",vs:"WAP4: no coach supply. Its trains take coach power from generator cars with diesel sets at the ends of the rake (end-on generation)."},
+ {id:"bur2",y:682,h:44,cat:"aux",t:"Aux converter box 2",s:"BUR2 + BUR3, charger",d:"Two more 130 kVA auxiliary converters and the battery charger. Loads are shared so the loco keeps running if one BUR is isolated.",vs:"WAP4: Arno converter and a separate battery charger."},
+ {id:"sb2",y:742,h:44,cat:"ctrl",t:"Control cubicle SB2",s:"VCU 2",d:"Second VCU, running as a backup that can take over the master role.",vs:"WAP4: no equivalent."}
+];
+
+const PARTS=[
+ {id:"crow",x:120,y:14,w:140,h:28,cat:"power",t:"Crowbar resistor",s:"",d:"A 2.5 Ω resistor on the cabinet roof behind an open grid, cooled by machine-room air. A chopper leg switches it in when the DC link spikes, for example on wheel slip or pantograph bounce. It can take about 1 MJ per event, a few in a row, then needs ten minutes to cool. It also drains the DC link in under 2 seconds at shutdown. It does not absorb braking energy."},
+ {id:"caps",x:30,y:62,w:200,h:44,cat:"power",t:"DC-link capacitors",s:"2800 V bank",d:"The DC link itself: a bank of large capacitor cans on flat laminated copper busbars, held at about 2800 V. It is the buffer between the line converters and the inverters. Passive discharge resistors bring it below 60 V within 10 minutes once the converter is off, and a mid-point earthing divider with current sensors watches for earth faults."},
+ {id:"mipu",x:30,y:118,w:200,h:64,cat:"power",t:"Inverter units ×5",s:"MIPU · 4 IGBTs each",d:"Each unit is four 4500 V, 1200 A IGBTs on a liquid-cooled plate, with their gate drivers, about 42 kg. Five units give ten switching legs: three per motor for the three motors, plus the crowbar chopper leg. They switch at 100–400 Hz and produce 0–2180 V at 0–175 Hz, 370 A per motor continuous. In braking the same legs rectify the motors' output back into the DC link."},
+ {id:"lcpu",x:30,y:194,w:200,h:64,cat:"power",t:"Line converter units ×4",s:"LCPU · 4 IGBTs each",d:"Same hardware as the inverter units, but each unit's four IGBTs are paralleled into one heavy phase leg, with master-slave gate drivers so the current shares evenly. Two units make one 4-quadrant converter on one 1269 V transformer winding; the cabinet has two such converters, switching at 250 Hz and interleaved so the line sees a clean sine wave at unity power factor."},
+ {id:"hx",x:30,y:270,w:200,h:50,cat:"cool",t:"Heat exchangers + fans",s:"Water-to-air, inside",d:"The power compartment is sealed (IP54). Two internal water-to-air heat exchangers with fans stir the air inside it, cooling the capacitors, busbars and cables that are not on cold plates."},
+ {id:"pump",x:30,y:332,w:200,h:50,cat:"cool",t:"Coolant pump & vessel",s:"Water-ethylene glycol",d:"A pump on the cabinet's left wall drives a water-ethylene glycol mix through the IGBT cold plates and out to the loco's radiator. The loop carries away up to about 49 kW of losses at about 60 °C inlet. An expansion tank with a level gauge sits beside it."},
+ {id:"ctl",x:246,y:62,w:104,h:84,cat:"ctrl",t:"Control rack",s:"TCU cards",d:"The converter's own computer: DSP processor cards, fibre-optic PWM links to every gate driver, speed-sensor and analog input cards, and an MVB link to the loco's VCUs. It regulates the DC link, runs the motor control and trips the converter on faults. Rated for −40 to +85 °C."},
+ {id:"k1",x:246,y:158,w:104,h:54,cat:"power",t:"Contactors",s:"Main + pre-charge",d:"The pre-charge contactor closes first, feeding the DC link through charging resistors so the capacitors fill gently. Then the main contactor closes and the converter runs. Some voltage and current sensors share this compartment."},
+ {id:"k2",x:246,y:220,w:104,h:54,cat:"ctrl",t:"Earthing switch",s:"+ voltage LED",d:"Shorts and grounds the DC link and resonant capacitors for maintenance. It is part of the colour-coded key interlock: the cabinet door keys are only released once both converters' earthing switches are closed. An LED above it flashes while dangerous voltage remains."},
+ {id:"res",x:246,y:282,w:104,h:44,cat:"power",t:"Resonant caps",s:"100 Hz filter",d:"Single-phase rectification makes the DC link ripple at twice line frequency. These capacitors, with the choke inside the transformer tank, form a filter tuned to 100 Hz that soaks that ripple up."},
+ {id:"term",x:246,y:334,w:104,h:48,cat:"aux",t:"Power terminals",s:"Cable entry",d:"Where the heavy cables bolt on: 320 mm² cables from the two transformer windings and the resonant choke, and 2 × 120 mm² cables per phase out to each of the three motors."}
+];
+const all={};
+function drawPlan(svg,list,loco){
+  svg.append(el("rect",{x:20,y:10,width:320,height:880,rx:46,fill:"var(--bg)",stroke:"var(--muted)","stroke-width":1.5}));
+  for(const [y,lab] of [[18,"Cab 1"],[808,"Cab 2"]]){
+    svg.append(el("rect",{x:32,y,width:296,height:80,rx:36,fill:"var(--paper)",stroke:"var(--line)"}));
+    txt(svg,180,y+46,lab,{fill:"var(--muted)",f:"var(--mono)",size:13});
+  }
+  for(const x of [52,308])svg.append(el("line",{x1:x,y1:110,x2:x,y2:800,stroke:"var(--line)","stroke-dasharray":"2 6"}));
+  const order=[...list].sort((a,b)=>(b.off?1:0)-(a.off?1:0));
+  for(const b of order){
+    const g=el("g",{class:"blk",tabindex:0,role:"button","aria-label":b.name||b.t});
+    const x=b.x??75,w=b.w??210;
+    g.append(el("rect",{x,y:b.y,width:w,height:b.h,rx:5,fill:b.off?"none":`var(--${b.cat}-bg)`,stroke:b.off?"var(--muted)":`var(--${b.cat})`,"stroke-width":1.5,"stroke-dasharray":b.off?"6 5":"none"}));
+    if(b.t){
+      const low=b.id==="sl4";const cy=low?b.y+b.h-12:b.y+b.h/2;
+      const t1=el("text",{x:x+w/2,y:low?cy-14:cy-(b.s?3:-5),"text-anchor":"middle",fill:"var(--ink)","font-family":"var(--display)","font-weight":600,"font-size":b.h>=60?15:14});t1.textContent=b.t;g.append(t1);
+      if(b.s){const t2=el("text",{x:x+w/2,y:low?cy+2:cy+12,"text-anchor":"middle",fill:"var(--muted)","font-size":11});t2.textContent=b.s;g.append(t2)}
+    }else{
+      const t=el("text",{x:x+8,y:b.y+b.h-8,fill:"var(--muted)","font-family":"var(--mono)","font-size":11});t.textContent="Main transformer · under floor";g.append(t);
+    }
+    g.addEventListener("click",()=>pick(loco,b.id));
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(loco,b.id)}});
+    svg.append(g);all[b.id]={b,g,loco};
+  }
+  txt(svg,180,116,"side aisles dotted",{fill:"var(--muted)",f:"var(--mono)",size:10});
+}
+const names={power:"Traction power path",aux:"Auxiliary supply",ctrl:"Control",air:"Air and brakes",cool:"Cooling",hotel:"Coach (hotel) power"};
+function cabinet(which){
+  const wrap=document.createElement("div");wrap.className="cab";
+  const svg=el("svg",{viewBox:"0 0 380 400",role:"img","aria-label":`Front view of the ${which} IGBT traction converter cabinet`});
+  svg.append(el("rect",{x:20,y:48,width:340,height:342,rx:6,fill:"var(--bg)",stroke:"var(--muted)","stroke-width":2}));
+  svg.append(el("line",{x1:238,y1:48,x2:238,y2:390,stroke:"var(--muted)","stroke-width":1.5}));
+  for(let i=0;i<7;i++)svg.append(el("line",{x1:128+i*20,y1:14,x2:128+i*20,y2:42,stroke:"var(--power)","stroke-width":1,opacity:.5}));
+  const info=document.createElement("div");info.className="partinfo";
+  const gs={};
+  for(const p of PARTS){
+    const g=el("g",{class:"part",tabindex:0,role:"button","aria-label":p.t});
+    g.append(el("rect",{x:p.x,y:p.y,width:p.w,height:p.h,rx:4,fill:`var(--${p.cat}-bg)`,stroke:`var(--${p.cat})`,"stroke-width":1.5,"fill-opacity":p.id==="crow"?.85:1}));
+    if(p.id==="mipu"||p.id==="lcpu"){const n=p.id==="mipu"?5:4;for(let i=0;i<n;i++)g.append(el("rect",{x:p.x+8+i*(184/n),y:p.y+36,width:184/n-6,height:20,rx:2,fill:"var(--paper)",stroke:`var(--${p.cat})`}))}
+    const ty=(p.id==="mipu"||p.id==="lcpu")?p.y+16:p.y+p.h/2-(p.s?2:-4);
+    const t1=el("text",{x:p.x+p.w/2,y:ty,"text-anchor":"middle",fill:"var(--ink)","font-weight":600,"font-size":12});t1.textContent=p.t;g.append(t1);
+    if(p.s){const t2=el("text",{x:p.x+p.w/2,y:ty+14,"text-anchor":"middle",fill:"var(--muted)","font-size":11});t2.textContent=p.s;g.append(t2)}
+    const go=()=>{for(const k in gs)gs[k].classList.toggle("on",k===p.id);info.innerHTML=`<div class="tag" style="color:var(--${p.cat})">${which} cabinet · ${names[p.cat]}</div><h4>${p.t}</h4><p>${p.d}</p>`};
+    g.addEventListener("click",go);g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}});
+    svg.append(g);gs[p.id]=g;
+    if(p.id==="caps")go();
+  }
+  wrap.append(svg,info);
+  const foot=document.createElement("p");foot.className="vs";foot.style.gridColumn="1/-1";
+  foot.textContent="Front view after Hind Rectifiers' HR-TC2400AC (figures 4.9–4.10), simplified. Medha, BHEL and other makes fit the same mounting points and cable connections, so their outside is similar but the inner layout differs. Tap a part.";
+  wrap.append(foot);
+  return wrap;
+}
+const panel=document.getElementById("panel");
+function pick(loco,id){
+  for(const k in all)all[k].g.classList.toggle("on",k===id);
+  const {b}=all[id];
+  const p=panel;
+  p.className="panel pop liv"+loco.slice(-1);
+  p.innerHTML=`<div class="tag livhead"><span>${loco}</span><button type="button" class="x" aria-label="Close">×</button></div><div class="tag" style="color:var(--${b.cat})">${names[b.cat]}${b.off?" · under floor or on roof":""}</div><h3 id="ptitle">${b.name||b.t}</h3><p>${b.d}</p><p class="vs">${b.vs}</p>`;
+  if(b.cab)p.append(cabinet(id.toUpperCase()));
+  p.querySelector(".x").onclick=()=>p.close();
+  if(!p.open)p.showModal();
+  p.scrollTop=0;
+}
+// close on a click on the backdrop, i.e. outside the dialog's box
+panel.addEventListener("click",e=>{if(e.target!==panel)return;const r=panel.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)panel.close()});
+panel.addEventListener("close",()=>{for(const k in all)all[k].g.classList.remove("on")});
+drawPlan(document.getElementById("p4"),W4,"WAP4");
+drawPlan(document.getElementById("p7"),W7,"WAP7");
+side(document.getElementById("s4"),{...cfg4("s4"),flows:null});
+side(document.getElementById("s7"),{...cfg7("s7"),flows:null});
+</script>
+</body>
+</html>
