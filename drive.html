@@ -25,7 +25,13 @@
   </header>
 
   <section class="sim" id="sim">
-    <p class="cap">Each loco pulls the same train: 22 LHB coaches, about 1050 t, on level track. Each loco has its own driver switch. On <b>Auto</b> the computer drives: it notches the WAP4 the way crews are taught, keeping motor current under 900 A and motor voltage under 750 V and using field weakening after notch 20. It asks the WAP7 for full tractive effort. Switch either loco to <b>Me</b> and drive it yourself, for example against the computer on the other loco, then press <b>Start from 0</b>. Raise or lower the pantograph voltage at any time and watch what each loco does with it. This is an illustrative model built from published ratings, not a certified simulation.</p>
+    <p class="cap">Both locos pull the same train: 22 LHB coaches, about 1050 t, on level track.</p>
+    <ul class="howto">
+      <li><b>Auto</b>: the computer drives. It notches the WAP4 within 900 A and 750 V, with field weakening after notch 20, and gives the WAP7 full tractive effort.</li>
+      <li><b>Me</b>: you drive. Switch either loco and press <b>Start from 0</b> to race the computer on the other.</li>
+      <li><b>Pantograph voltage</b>: change it at any time to see how each loco copes.</li>
+    </ul>
+    <p class="cap">Auto is a flat-out start on a clear main line: no wheel slip, crossovers or brake release to wait for. Real drivers start more gently, but both locos skip the same things. This is an illustrative model, not a certified simulation.</p>
 
     <div class="simbar">
       <button type="button" class="btn primary" id="simrun">Start from 0</button>
@@ -115,7 +121,7 @@
       <figure><figcaption><h2>Speed over time</h2><span class="note"><i class="key k4"></i>WAP4 <i class="key k7"></i>WAP7</span></figcaption><canvas id="ch1" height="220" aria-label="Speed against time for both locomotives"></canvas></figure>
       <figure><figcaption><h2>Pull against speed</h2><span class="note">tractive effort, kN</span></figcaption><canvas id="ch2" height="220" aria-label="Tractive effort against speed for both locomotives"></canvas></figure>
     </div>
-    <p class="cap"><b>Why the WAP4 line is a sawtooth.</b> Each notch fixes the DC voltage. As the train speeds up, the series motors generate more back-voltage, so less current flows; and because their field is made by that same current, the pull falls even faster than the current does. Taking the next notch lifts the voltage and the current jumps back up. The WAP7's converters re-adjust voltage and frequency hundreds of times a second to hold the pull you asked for, so its line stays flat until it reaches its power limit.</p>
+    <p class="cap"><b>Why the WAP4 line is a sawtooth.</b> Each notch fixes the DC voltage. As the train speeds up, the series motors generate more back-voltage, so less current flows; and because their field is made by that same current, the pull falls even faster than the current does. Taking the next notch lifts the voltage and the current jumps back up. The WAP7's converters re-adjust voltage and frequency hundreds of times a second to hold the pull you asked for, so its line stays flat until it reaches its power limit. Passengers don't feel the WAP4's teeth: each notch adds only about 10 to 50 kN, a change of a few hundredths of a m/s² across a 1160 t train, and the pull then fades over several seconds. The series motors also damp surges, because their pull drops as soon as the loco runs ahead of the train. The WAP7's torque control holds its pull steady instead, which is partly why a hard WAP7 start or regen can feel jerkier.</p>
   </section>
 
   <nav class="pager" aria-label="Other pages"><a href="power.html">← Power flow: motoring and braking</a><span></span></nav>

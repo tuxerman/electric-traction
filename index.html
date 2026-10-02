@@ -46,19 +46,8 @@
     </figure>
     <dialog class="panel pop" id="panel" aria-labelledby="ptitle"></dialog>
   </div>
+  <p class="cap">Dashed outlines are on the roof or under the floor. For those levels, see the side views on <a href="power.html">Power flow</a>.</p>
 
-  <section style="display:grid;gap:16px">
-    <h2>Side views: roof, body and under the floor</h2>
-    <p class="cap">The plan view hides two important levels. On the WAP7 the transformer hangs under the floor, directly below the two converters. On the WAP4 the transformer stands inside the body and the smoothing reactors hang underneath. Scroll sideways on a phone.</p>
-    <figure class="liv4">
-      <figcaption class="livhead"><h2>WAP4</h2></figcaption>
-      <div class="scroll"><svg class="side" id="s4" viewBox="0 0 900 290" role="img" aria-label="Side elevation of a WAP4 showing roof, body and underframe equipment"></svg></div>
-    </figure>
-    <figure class="liv7">
-      <figcaption class="livhead"><h2>WAP7</h2></figcaption>
-      <div class="scroll"><svg class="side" id="s7" viewBox="0 0 900 290" role="img" aria-label="Side elevation of a WAP7 showing roof, body and underframe equipment"></svg></div>
-    </figure>
-  </section>
 
   <section class="sources">
     <h2>Where to see real photos</h2>
@@ -184,8 +173,6 @@ panel.addEventListener("click",e=>{if(e.target!==panel)return;const r=panel.getB
 panel.addEventListener("close",()=>{for(const k in all)all[k].g.classList.remove("on")});
 drawPlan(document.getElementById("p4"),W4,"WAP4");
 drawPlan(document.getElementById("p7"),W7,"WAP7");
-side(document.getElementById("s4"),{...cfg4("s4"),flows:null});
-side(document.getElementById("s7"),{...cfg7("s7"),flows:null});
 </script>
 </body>
 </html>

@@ -5,9 +5,10 @@ const txt=(svg,x,y,s,o={})=>{const t=el("text",{x,y,"text-anchor":o.a||"middle",
 function side(svg,cfg){
   const defs=el("defs",{});const m=el("marker",{id:"ah"+cfg.k,viewBox:"0 0 10 10",refX:"7",refY:"5",markerWidth:"4",markerHeight:"4",orient:"auto"});
   m.append(el("path",{d:"M1 1L9 5L1 9z",style:"fill:var(--power)"}));defs.append(m);svg.append(defs);
-  svg.append(el("line",{x1:10,y1:276,x2:890,y2:276,stroke:"var(--muted)","stroke-width":2}));
-  svg.append(el("rect",{x:20,y:80,width:860,height:120,rx:10,fill:"var(--bg)",stroke:"var(--muted)","stroke-width":1.5}));
-  for(const x of [20,800])svg.append(el("rect",{x,y:80,width:80,height:120,rx:10,fill:"var(--paper)",stroke:"var(--line)"}));
+  // quiet structure (body, cabs, bogies, rail) so the equipment and the flow lines carry the colour
+  svg.append(el("line",{x1:10,y1:276,x2:890,y2:276,stroke:"var(--line)","stroke-width":2}));
+  svg.append(el("rect",{x:20,y:80,width:860,height:120,rx:12,fill:"var(--bg)",stroke:"var(--line)","stroke-width":1.5}));
+  for(const x of [100,800])svg.append(el("line",{x1:x,y1:84,x2:x,y2:196,stroke:"var(--line)"}));
   txt(svg,60,145,"Cab 1",{fill:"var(--muted)",f:"var(--mono)"});txt(svg,840,145,"Cab 2",{fill:"var(--muted)",f:"var(--mono)"});
   for(const px of [230,670]){
     svg.append(el("polyline",{points:`${px-28},80 ${px},50 ${px+28},80`,fill:"none",stroke:"var(--muted)","stroke-width":2}));
@@ -15,18 +16,18 @@ function side(svg,cfg){
     txt(svg,px,32,"Pantograph",{fill:"var(--muted)"});
   }
   for(const [x0] of [[cfg.b1],[cfg.b2]]){
-    svg.append(el("rect",{x:x0,y:206,width:200,height:46,rx:6,fill:"none",stroke:"var(--muted)","stroke-dasharray":"6 5","stroke-width":1.5}));
-    for(const i of [0,1,2])svg.append(el("circle",{cx:x0+35+i*65,cy:259,r:15,fill:"var(--paper)",stroke:"var(--muted)","stroke-width":1.5}));
-    txt(svg,x0+100,226,cfg.motorLabel,{size:13,w:600});
+    svg.append(el("rect",{x:x0,y:206,width:200,height:46,rx:6,fill:"none",stroke:"var(--line)","stroke-dasharray":"5 5","stroke-width":1.5}));
+    for(const i of [0,1,2])svg.append(el("circle",{cx:x0+35+i*65,cy:259,r:15,fill:"var(--paper)",stroke:"var(--line)","stroke-width":2}));
+    txt(svg,x0+100,226,cfg.motorLabel,{size:13,w:600,fill:"var(--muted)"});
   }
   // grey boxes: equipment off the traction path. Name lines in the body font, the IR code (in brackets) in mono.
   for(const g of cfg.grey){
-    svg.append(el("rect",{x:g.x,y:96,width:g.w,height:60,rx:4,fill:"var(--grey-bg)",stroke:"var(--line)"}));
+    svg.append(el("rect",{x:g.x,y:96,width:g.w,height:60,rx:6,fill:"var(--grey-bg)"}));
     const sz=cfg.greySize,lh=sz+2;
     g.l.forEach((l,i,a)=>txt(svg,g.x+g.w/2,126+sz/2-1+(i-(a.length-1)/2)*lh,l,{size:sz,fill:"var(--muted)",f:l[0]==="("?"var(--mono)":"var(--body)"}));
   }
   for(const it of cfg.items){
-    svg.append(el("rect",{x:it.x,y:it.y,width:it.w,height:it.h,rx:4,fill:it.off?"none":`var(--${it.cat}-bg)`,stroke:it.off?"var(--muted)":`var(--${it.cat})`,"stroke-width":1.5,"stroke-dasharray":it.off?"6 5":"none"}));
+    svg.append(el("rect",{x:it.x,y:it.y,width:it.w,height:it.h,rx:6,fill:it.off?"none":`var(--${it.cat}-bg)`,stroke:it.off?"var(--muted)":`var(--${it.cat})`,"stroke-width":it.off?1.2:1.5,"stroke-dasharray":it.off?"5 5":"none"}));
     if(it.small)it.lines.forEach((l,i,arr)=>txt(svg,it.x+it.w/2,it.y+it.h/2+4+(i-(arr.length-1)/2)*11,l,{size:9,w:i?400:600,fill:i?"var(--muted)":"var(--ink)",f:l[0]==="("?"var(--mono)":"var(--body)"}));
     else (it.lines||[it.t]).forEach((l,i,arr)=>txt(svg,it.x+it.w/2,it.y+it.h/2+5+(i-(arr.length-1)/2)*15,l,{size:i?11:13,w:i?400:600,fill:i?"var(--muted)":"var(--ink)"}));
     if(it.above)txt(svg,it.x+it.w/2,it.y-8,it.above,{fill:"var(--muted)"});
